@@ -57,12 +57,12 @@ export default function App(): JSX.Element {
     }
 
     const [items, setItems] = useState<Item[]>([
-        { name: '1' },
-        { name: '2' },
-        { name: '3' },
-        { name: '4' },
-        { name: '5' },
-        { name: '6' },
+        { name: 'مافیا' },
+        { name: 'مافیا' },
+        { name: 'شهر' },
+        { name: 'شهر' },
+        { name: 'شهر' },
+        { name: 'شهر' },
     ]);
 
     const [shuffledItems, shuffleItems] = useState(shuffle(items))
