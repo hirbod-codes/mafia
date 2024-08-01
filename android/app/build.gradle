@@ -91,10 +91,10 @@ android {
         }
 
         release {
-            storeFile file('your_key_name.keystore')
-            storePassword System.console()?.readLine("\nKeystore password:")
-            keyAlias System.console()?.readLine("\nAlias: ")
-            keyPassword System.console()?.readLine("\nAlias password: ")
+            storeFile file('release-key.keystore')
+            storePassword '123456'
+            keyAlias 'key-alias'
+            keyPassword '123456'
         }
     }
     buildTypes {
