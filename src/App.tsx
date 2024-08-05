@@ -5,12 +5,13 @@
  * @format
  */
 
-import { JSX, useRef, useState } from 'react';
+import { JSX, useEffect, useRef, useState } from 'react';
 import { Appearance } from 'react-native';
 import {
     MD3LightTheme as lightTheme,
     MD3DarkTheme as darkTheme,
     PaperProvider,
+    Text,
 } from 'react-native-paper';
 import { Configuration, ConfigurationContext } from './ConfigurationContext'
 import { NavigationContainer, Theme } from '@react-navigation/native';
@@ -46,13 +47,40 @@ export default function App(): JSX.Element {
 
     const [configuration, setConfigurationState] = useState<Configuration | undefined>(undefined)
 
-    if (!configuration)
-        storage.load({ key: 'configuration' })
-            .then((c) => { setConfigurationState(c) })
+    useEffect(() => {
+        if (!configuration) {
+            console.log('aaaaaaaaaaaaaaaaaaaaa')
+            const defaultConfig: Configuration = {
+                locale: {
+                    calendar: 'Persian',
+                    direction: 'ltr',
+                    zone: 'Asia/Tehran',
+                    name: 'en-US'
+                }
+            }
+
+            storage.load({ key: 'configuration' })
+                .catch(async (args) => {
+                    console.error('load args', { args })
+                    await setConfiguration(defaultConfig)
+                })
+                .then(async (c: Configuration) => {
+                    console.log('aaaaaaaaaaaaaaaaaaaaa', { c })
+                    if (c)
+                        setConfigurationState(c)
+                    else
+                        await setConfiguration(defaultConfig)
+                })
+        }
+    }, [])
 
     const setConfiguration = async (c: Configuration) => {
-        await storage.save({ key: 'configuration', expires: null, data: c })
-        setConfiguration(c)
+        try {
+            await storage.save({ key: 'configuration', expires: null, data: c })
+            setConfigurationState(c)
+        } catch (error) {
+            console.error('load args', { error })
+        }
     }
 
     const [items, setItems] = useState<Item[]>([
@@ -64,17 +92,19 @@ export default function App(): JSX.Element {
         { name: 'شهر' },
     ]);
 
-    const [shuffledItems, shuffleItems] = useState(shuffle(items))
+    const [shuffledItems, setShuffledItems] = useState(shuffle(items))
+
+    console.log('App', { configuration, shuffledItems, items })
 
     if (!configuration)
-        return (<></>)
+        return (<Text>No Configuration</Text>)
 
     return (
         <>
             <SafeAreaProvider>
                 <ConfigurationContext.Provider value={{ ...configuration, setConfiguration, toggleTheme }}>
                     <PaperProvider theme={theme}>
-                        <ItemsContext.Provider value={{ items, shuffledItems, setItems, shuffleItems: () => shuffleItems(shuffle(items)) }}>
+                        <ItemsContext.Provider value={{ items, shuffledItems, setItems, shuffleItems: () => setShuffledItems(shuffle(items)) }}>
                             <NavigationContainer theme={theme as unknown as Theme}>
                                 <Drawer.Navigator
                                     initialRouteName="Presentation"
@@ -104,6 +134,7 @@ function shuffle(items: any[]): any[] {
 
     // const rand = crypto.getRandomValues(new Uint8Array(items.length)).map(e => e / 1000);
     // console.log('crypto ', rand, rand.map(e => e % items.length))
+    console.log({ items })
 
     const newArray = [...items];
     let currentIndex = newArray.length;

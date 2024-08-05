@@ -11,4 +11,9 @@ export type ItemsContextType = {
     shuffleItems?: () => void | Promise<void>;
 }
 
-export const ItemsContext = React.createContext<ItemsContextType | null>(null);
+export const ItemsContext = React.createContext<ItemsContextType | null>({
+    items: [],
+    shuffledItems: [],
+    setItems: () => { },
+    shuffleItems: () => { },
+});
