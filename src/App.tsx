@@ -23,7 +23,6 @@ import { DrawerContent } from './Components/DrawerContent';
 import { Items } from './Pages/Items';
 import { Presentation } from './Pages/Presentation';
 import { Item, ItemsContext } from './ItemsContxt';
-import 'react-native-get-random-values'
 
 const Drawer = createDrawerNavigator();
 
@@ -103,8 +102,8 @@ export default function App(): JSX.Element {
 function shuffle(items: any[]): any[] {
     console.group('shuffle')
 
-    const rand = crypto.getRandomValues(new Uint8Array(items.length)).map(e => e / 1000);
-    console.log('crypto ', rand, rand.map(e => e % items.length))
+    // const rand = crypto.getRandomValues(new Uint8Array(items.length)).map(e => e / 1000);
+    // console.log('crypto ', rand, rand.map(e => e % items.length))
 
     const newArray = [...items];
     let currentIndex = newArray.length;
